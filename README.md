@@ -5,7 +5,7 @@
 [![Version](https://img.shields.io/badge/version-2.7.4-blue.svg)](https://github.com/czlonkowski/n8n-mcp)
 [![Docker](https://img.shields.io/badge/docker-ghcr.io%2Fczlonkowski%2Fn8n--mcp-green.svg)](https://github.com/czlonkowski/n8n-mcp/pkgs/container/n8n-mcp)
 
-A Model Context Protocol (MCP) server that provides AI assistants with comprehensive access to n8n node documentation, properties, and operations. Deploy in minutes to give Claude and other AI assistants deep knowledge about n8n's 525+ workflow automation nodes.
+A Model Context Protocol (MCP) server that provides AI assistants with comprehensive access to n8n node documentation, properties, and operations. Deploy in minutes to give Claude, Ollama, and other AI assistants deep knowledge about n8n's 525+ workflow automation nodes.
 
 ## Overview
 
@@ -21,6 +21,38 @@ n8n-MCP serves as a bridge between n8n's workflow automation platform and AI mod
 ## 🚀 Quick Start
 
 Get n8n-MCP running in 5 minutes:
+
+### 🆕 Ollama Integration (Recommended for Local LLMs)
+
+For users running local LLMs with Ollama, we provide optimized integration scripts:
+
+```bash
+# 1. Install Ollama (if not already installed)
+curl -fsSL https://ollama.ai/install.sh | sh
+
+# 2. Download Qwen3:8b model (optimized for n8n workflows)
+ollama pull qwen3:8b
+
+# 3. Set environment variables
+export AUTH_TOKEN="your-secure-token-here"
+
+# 4. Run the startup script
+chmod +x scripts/ollama-n8n-mcp-startup.sh
+./scripts/ollama-n8n-mcp-startup.sh
+```
+
+**Test the integration:**
+```bash
+# Run comprehensive tests
+./scripts/test-ollama-integration.sh --benchmark --gpu-test --mcp-test
+
+# Run performance benchmarks
+./scripts/benchmark-ollama-performance.sh --output benchmark-results.md
+```
+
+**Full setup guide:** [Ollama Setup Documentation](docs/OLLAMA_SETUP.md)
+
+### Claude Desktop Integration
 
 ### Option 1: Docker (Easiest) 🚀
 
