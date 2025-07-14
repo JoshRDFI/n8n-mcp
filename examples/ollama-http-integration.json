@@ -1,0 +1,145 @@
+{
+  "name": "Ollama HTTP Integration with n8n-MCP",
+  "description": "Example configuration for integrating Ollama with n8n-MCP using HTTP mode",
+  "version": "1.0.0",
+  "integration": {
+    "type": "http",
+    "ollama": {
+      "host": "localhost",
+      "port": 11434,
+      "model": "qwen3:8b",
+      "endpoint": "http://localhost:11434/api/generate"
+    },
+    "n8n-mcp": {
+      "host": "localhost",
+      "port": 3000,
+      "endpoint": "http://localhost:3000/mcp",
+      "auth_token": "your-secure-token-here"
+    }
+  },
+  "setup": {
+    "steps": [
+      "1. Start Ollama service: systemctl start ollama",
+      "2. Load Qwen3:8b model: ollama pull qwen3:8b",
+      "3. Start n8n-MCP in HTTP mode: docker run -d -p 3000:3000 -e MCP_MODE=http -e AUTH_TOKEN=your-token ghcr.io/czlonkowski/n8n-mcp:latest",
+      "4. Configure Ollama to use n8n-MCP tools"
+    ]
+  },
+  "ollama_config": {
+    "model": "qwen3:8b",
+    "system_prompt": "You are an AI assistant with access to n8n workflow automation tools. Use the available MCP tools to help users create and manage n8n workflows.",
+    "functions": [
+      {
+        "name": "list_nodes",
+        "description": "List available n8n nodes with their properties and documentation",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "category": {
+              "type": "string",
+              "description": "Filter nodes by category (e.g., 'AI', 'HTTP', 'Database')"
+            },
+            "search": {
+              "type": "string", 
+              "description": "Search for nodes by name or description"
+            }
+          }
+        }
+      },
+      {
+        "name": "get_node_info",
+        "description": "Get detailed information about a specific n8n node",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "node_type": {
+              "type": "string",
+              "description": "The node type to get information for (e.g., 'n8n-nodes-base.httpRequest')",
+              "required": true
+            }
+          }
+        }
+      },
+      {
+        "name": "create_workflow",
+        "description": "Create a new n8n workflow",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "description": "Name of the workflow",
+              "required": true
+            },
+            "description": {
+              "type": "string",
+              "description": "Description of the workflow"
+            },
+            "nodes": {
+              "type": "array",
+              "description": "Array of nodes to include in the workflow"
+            }
+          }
+        }
+      }
+    ]
+  },
+  "example_requests": {
+    "list_ai_nodes": {
+      "method": "POST",
+      "url": "http://localhost:3000/mcp",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer your-secure-token-here"
+      },
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "tools/call",
+        "params": {
+          "name": "list_nodes",
+          "arguments": {
+            "category": "AI"
+          }
+        },
+        "id": 1
+      }
+    },
+    "get_http_request_info": {
+      "method": "POST", 
+      "url": "http://localhost:3000/mcp",
+      "headers": {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer your-secure-token-here"
+      },
+      "body": {
+        "jsonrpc": "2.0",
+        "method": "tools/call",
+        "params": {
+          "name": "get_node_info",
+          "arguments": {
+            "node_type": "n8n-nodes-base.httpRequest"
+          }
+        },
+        "id": 2
+      }
+    }
+  },
+  "testing": {
+    "health_check": "curl http://localhost:3000/health",
+    "ollama_test": "curl http://localhost:11434/api/tags",
+    "integration_test": "./scripts/test-ollama-integration.sh --mcp-test"
+  },
+  "performance": {
+    "expected_response_time": "< 100ms for MCP calls",
+    "gpu_utilization": "8-12GB for qwen3:8b on NVIDIA 5080",
+    "benchmark_command": "./scripts/benchmark-ollama-performance.sh --output results.md"
+  },
+  "troubleshooting": {
+    "common_issues": [
+      "Ollama service not running: systemctl start ollama",
+      "Model not loaded: ollama pull qwen3:8b",
+      "MCP server not accessible: check docker logs n8n-mcp",
+      "Authentication failed: verify AUTH_TOKEN environment variable"
+    ]
+  }
+} 
