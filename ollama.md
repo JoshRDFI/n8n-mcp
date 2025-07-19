@@ -49,20 +49,50 @@ This document outlines the step-by-step plan to migrate n8n-MCP from Claude Desk
    - Verify MCP connection
 
 2. Create Ollama MCP client configuration:
+
+   **For Cursor IDE Integration**:
    ```json
    {
      "mcpServers": {
        "n8n-mcp": {
          "command": "docker",
          "args": [
-           "run", "-i", "--rm",
+           "run",
+           "-i",
+           "--rm",
            "-e", "MCP_MODE=stdio",
+           "-e", "LOG_LEVEL=error",
+           "-e", "DISABLE_CONSOLE_OUTPUT=true",
            "ghcr.io/czlonkowski/n8n-mcp:latest"
          ]
        }
      }
    }
    ```
+
+   **For Cursor with Full n8n Integration**:
+   ```json
+   {
+     "mcpServers": {
+       "n8n-mcp": {
+         "command": "docker",
+         "args": [
+           "run",
+           "-i",
+           "--rm",
+           "-e", "MCP_MODE=stdio",
+           "-e", "LOG_LEVEL=error",
+           "-e", "DISABLE_CONSOLE_OUTPUT=true",
+           "-e", "N8N_API_URL=http://localhost:5678",
+           "-e", "N8N_API_KEY=your-n8n-api-key-here",
+           "ghcr.io/czlonkowski/n8n-mcp:latest"
+         ]
+       }
+     }
+   }
+   ```
+
+   **Configuration File**: `cursor-mcp-config-docker-full.json`
 
 3. Document Ollama-specific setup instructions
 
@@ -121,7 +151,36 @@ echo "🤖 Ollama Model: qwen3:8b (Host Installation)"
 
 **Note**: This setup uses **Host Ollama** for optimal performance, especially with NVIDIA 5080 and custom PyTorch builds.
 
-#### 1.3 Alternative Integration Methods
+#### 1.3 Cursor IDE Integration (Recommended)
+**Goal**: Provide seamless integration with Cursor IDE for n8n workflow development
+
+**Configuration Options**:
+1. **Basic Configuration** (Documentation tools only):
+   - Uses Docker to run n8n-MCP in stdio mode
+   - Provides access to all n8n node documentation and validation tools
+   - No n8n instance connection required
+   - File: `cursor-mcp-config-docker.json`
+
+2. **Full Configuration** (With n8n workflow management):
+   - Includes n8n API credentials for workflow management
+   - Can create, update, and execute workflows directly
+   - Requires n8n API key configuration
+   - File: `cursor-mcp-config-docker-full.json`
+
+**Setup Instructions**:
+1. Copy the appropriate configuration to Cursor's settings
+2. Restart Cursor to load the MCP server
+3. Test with simple queries like "Show me available n8n nodes for sending emails"
+4. For full integration, configure n8n API key in the configuration
+
+**Benefits**:
+- **Native MCP Support**: Uses stdio communication as expected by Cursor
+- **Docker Integration**: Leverages existing Docker setup
+- **Isolated Sessions**: Each Cursor session gets a fresh MCP server instance
+- **No HTTP Dependencies**: Doesn't rely on HTTP server staying running
+- **Full Tool Access**: All 525+ n8n nodes and validation tools available
+
+#### 1.4 Alternative Integration Methods
 **Goal**: Provide multiple ways to integrate with Ollama
 
 **Options**:

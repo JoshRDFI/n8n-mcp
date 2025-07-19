@@ -52,6 +52,77 @@ chmod +x scripts/ollama-n8n-mcp-startup.sh
 
 **Full setup guide:** [Ollama Setup Documentation](docs/OLLAMA_SETUP.md)
 
+### Cursor IDE Integration 🚀
+
+**NEW**: n8n-MCP now supports Cursor IDE integration! Get AI-powered n8n workflow assistance directly in your development environment.
+
+#### Quick Setup for Cursor
+
+**Prerequisites:** Docker installed and running
+
+1. **Copy the configuration** to Cursor's settings:
+
+**Basic configuration (documentation tools only):**
+```json
+{
+  "mcpServers": {
+    "n8n-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e", "MCP_MODE=stdio",
+        "-e", "LOG_LEVEL=error",
+        "-e", "DISABLE_CONSOLE_OUTPUT=true",
+        "ghcr.io/czlonkowski/n8n-mcp:latest"
+      ]
+    }
+  }
+}
+```
+
+**Full configuration (with n8n workflow management):**
+```json
+{
+  "mcpServers": {
+    "n8n-mcp": {
+      "command": "docker",
+      "args": [
+        "run",
+        "-i",
+        "--rm",
+        "-e", "MCP_MODE=stdio",
+        "-e", "LOG_LEVEL=error",
+        "-e", "DISABLE_CONSOLE_OUTPUT=true",
+        "-e", "N8N_API_URL=http://localhost:5678",
+        "-e", "N8N_API_KEY=your-n8n-api-key-here",
+        "ghcr.io/czlonkowski/n8n-mcp:latest"
+      ]
+    }
+  }
+}
+```
+
+2. **Configuration file**: `cursor-mcp-config-docker-full.json` (included in this repository)
+
+3. **Restart Cursor** to load the MCP server
+
+4. **Test the integration**: Ask "Show me available n8n nodes for sending emails"
+
+**Benefits of Cursor Integration:**
+- ✅ **Native MCP Support**: Uses stdio communication as expected by Cursor
+- ✅ **Docker Integration**: Leverages existing Docker setup
+- ✅ **Isolated Sessions**: Each Cursor session gets a fresh MCP server instance
+- ✅ **No HTTP Dependencies**: Doesn't rely on HTTP server staying running
+- ✅ **Full Tool Access**: All 525+ n8n nodes and validation tools available
+- ✅ **Workflow Management**: Create, update, and execute workflows directly (with API key)
+
+**Configuration file locations for Cursor:**
+- **Linux**: `~/.config/Cursor/User/settings.json`
+- **macOS**: `~/Library/Application Support/Cursor/User/settings.json`
+- **Windows**: `%APPDATA%\Cursor\User\settings.json`
+
 ### Claude Desktop Integration
 
 ### Option 1: Docker (Easiest) 🚀
@@ -356,6 +427,8 @@ Save these instructions in your Claude Project for optimal n8n workflow assistan
 - **💡 Working Examples**: Real-world examples for immediate use
 - **⚡ Fast Response**: Average query time ~12ms with optimized SQLite
 - **🌐 Universal Compatibility**: Works with any Node.js version
+- **🚀 Cursor IDE Integration**: Native MCP support for Cursor IDE (NEW!)
+- **🐳 Docker Integration**: Seamless Docker-based deployment and configuration
 
 ## 💬 Why n8n-MCP? A Testimonial from Claude
 
@@ -534,6 +607,15 @@ Current database coverage (n8n v1.99.1):
 - 💾 **Database size**: ~15MB (optimized)
 
 ## 🔄 Recent Updates
+
+### v2.7.5 - Cursor IDE Integration
+- ✅ **NEW**: Native Cursor IDE support with MCP stdio communication
+- ✅ **NEW**: Docker-based configuration for seamless setup
+- ✅ **NEW**: Configuration files included: `cursor-mcp-config-docker-full.json`
+- ✅ **NEW**: Isolated sessions - each Cursor session gets fresh MCP server instance
+- ✅ **NEW**: Full tool access - all 525+ n8n nodes and validation tools available
+- ✅ **NEW**: Workflow management capabilities with n8n API integration
+- ✅ **OPTIMIZED**: No HTTP dependencies - direct stdio communication
 
 ### v2.7.4 - Self-Documenting MCP Tools
 - ✅ **RENAMED**: `start_here_workflow_guide` → `tools_documentation` for clarity

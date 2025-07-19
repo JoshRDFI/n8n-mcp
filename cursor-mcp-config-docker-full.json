@@ -1,0 +1,18 @@
+{
+    "mcpServers": {
+      "n8n-mcp": {
+        "command": "docker",
+        "args": [
+          "run",
+          "-i",
+          "--rm",
+          "-e", "MCP_MODE=stdio",
+          "-e", "LOG_LEVEL=error",
+          "-e", "DISABLE_CONSOLE_OUTPUT=true",
+          "-e", "N8N_API_URL=http://localhost:5678",
+          "-e", "N8N_API_KEY=your-n8n-api-key-here",
+          "ghcr.io/czlonkowski/n8n-mcp:latest"
+        ]
+      }
+    }
+  }
